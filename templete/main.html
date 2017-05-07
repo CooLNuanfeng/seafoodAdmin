@@ -1,0 +1,117 @@
+<nav-header selected="index"></nav-header>
+<div class="jumbotron nf-jumbotron">
+  <div class="container">
+      <h2>首页信息</h2>
+      <p>首页信息查看 修改</p>
+  </div>
+</div>
+<div class="container-fluid" ng-controller="indexControl">
+    <div class="nf-pb20">
+        <button class="btn btn-success" ng-click="open('lg')"> + 添加新商品</button>
+    </div>
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th>商品ID</th>
+                <th>分类</th>
+                <th>标题</th>
+                <th>标签tag</th>
+                <th>商品单价(kg)</th>
+                <th>商品描述说明</th>
+                <th>商品图片地址</th>
+                <th>商品喜欢人数</th>
+                <th>商品购买人数</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(key,item) in tableData track by $index">
+                <td>{{$index+1}}</td>
+                <td>{{key}}</td>
+                <td>{{item.classify | classify}}</td>
+                <td>{{item.title}}</td>
+                <td>{{item.tag}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.imgsrc}}</td>
+                <td>{{item.likeCount}}</td>
+                <td>{{item.shopCount}}</td>
+                <td>
+                    <button class="btn btn-primary" ng-click="open('lg',key)">修改</button>
+                    <button class="btn btn-danger" ng-click="del(item.id)">删除</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pull-right" ng-if="totalItems > 10">
+        <ul uib-pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" items-per-page="10" max-size="maxSize" class="pagination-sm" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" ng-change="pageChanged(currentPage)"></ul>
+    </div>
+</div>
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">{{modalTitle}}</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="nf-modal-warp">
+            <div class="row form-group">
+                <label for="shopTitle" class="col-sm-3 control-label">商品分类</label>
+                <div class="col-sm-9">
+                    <select class="form-control" ng-model="shopClassify" value="鱼类">
+                        <option value="fish">鱼类</option>
+                        <option value="shrimpcrabs">虾蟹</option>
+                        <option value="shellfish">参贝</option>
+                        <option value="dry">干货</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopTitle" class="col-sm-3 control-label">商品标题</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopTitle" placeholder="请输入商品标题" ng-model="shopTitle" value="{{shopTitle}}">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopTag" class="col-sm-3 control-label">标签(tag)</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopTag" placeholder="请输入商品标题" ng-model="shopTag" value="{{shopTag}}">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopPrice" class="col-sm-3 control-label">单价(kg)</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopPrice" placeholder="请输入商品单价" ng-model="shopPrice" value="{{shopPrice}}">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopDescription" class="col-sm-3 control-label">描述信息</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopDescription" placeholder="请输入商品具体描述信息" ng-model="shopDescription" value="{{shopDescription}}">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopImgsrc" class="col-sm-3 control-label">图片路径</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopImgsrc" placeholder="请输入商品展示的图片url路径" ng-model="shopImgsrc" value="{{shopImgsrc}}">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopLikecount" class="col-sm-3 control-label">喜欢人数</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopLikecount" placeholder="请输入喜欢的人数" ng-model="shopLikecount" value="{{shopLikecount}}">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="shopBuycount" class="col-sm-3 control-label">购买人数</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="shopBuycount" placeholder="请输入购买的人数" ng-model="shopBuycount" value="{{shopBuycount}}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">确定</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+</script>
