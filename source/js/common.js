@@ -1,3 +1,4 @@
+// 图床  https://postimage.io/
 var commonModule = angular.module('commonModule',[]);
 
 commonModule.value('config',{
@@ -24,6 +25,18 @@ commonModule.directive('navHeader',function(){
         }
     }
 });
+
+commonModule.service('arrDataPagition',function(){
+
+    this.init = function(arr,cur,size){
+        var newArr = [];
+        angular.forEach(arr,function(item,index){
+            newArr.push(item);
+        });
+        return newArr.splice((cur-1)*size,size);
+    }
+});
+
 
 commonModule.filter('classify',['config',function(config){
     return function(str){

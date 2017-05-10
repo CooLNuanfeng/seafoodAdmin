@@ -1,7 +1,7 @@
 var mycontroller = angular.module('controllerModule',[]);
 
 //首页 controller
-mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','config',function($scope,$uibModal,$wilddogObject,config){
+mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','config','arrDataPagition',function($scope,$uibModal,$wilddogObject,config,arrDataPagition){
     //console.log(config,'config');
     wilddog.initializeApp(config.wilddog);
     var myshopData = wilddog.sync().ref('indexData');
@@ -29,26 +29,33 @@ mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','c
 
     var onceFlag = true;
     myshopData.on('value',function(snapshot){
-        var tableData = {};
+        var tableData = [];
         angular.forEach(snapshot.val(),function(item,key){
             angular.forEach(item,function(obj,k){
-                console.log(k);
-                tableData[k] = obj;
+                obj['key_id'] = k;
+                tableData.push(obj);
             });
         });
-        $scope.tableData = tableData;
         $scope.currentPage = 1;
-        $scope.maxSize = 5;
-        $scope.totalItems = 100;
+        $scope.pageSize = 2;
+        $scope.maxSize = Math.ceil(tableData.length/$scope.pageSize);
+        $scope.totalItems = tableData.length;
+
+        $scope.tableData = arrDataPagition.init(tableData,$scope.currentPage,$scope.pageSize);
+
         if(onceFlag){
             $scope.$digest();
             onceFlag = false;
         }
+
+        $scope.pageChanged = function(page) {
+            //console.log('Page changed to: ' + page);
+            $scope.tableData =arrDataPagition.init(tableData,page,$scope.pageSize)
+        };
+
     });
 
-    $scope.pageChanged = function(page) {
-        console.log('Page changed to: ' + page);
-    };
+
 
 
     //modal
@@ -93,7 +100,7 @@ mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','c
             }else{
                 myshopData.child(classify).push(json);
             }
-            
+
             // //way one code
             // syncObject.$save().then(function(ref) {
             //     console.log('success',ref);
