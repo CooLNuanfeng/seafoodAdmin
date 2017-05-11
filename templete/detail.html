@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="row form-group">
-        <label for="shopImgsrc" class="col-md-3 control-label">图片路径</label>
+        <label for="shopImgsrc" class="col-md-3 control-label">首图图片路径</label>
         <div class="col-md-9">
           <input type="text" class="form-control" id="shopImgsrc" placeholder="请输入商品展示的图片url路径" ng-model="shopImgsrc" value="{{shopImgsrc}}">
         </div>
@@ -97,8 +97,8 @@
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-6 text-right">
-            <button class="btn btn-success btn-lg" ng-if="!isModify" ng-click="addNew()">添加</button>
-            <button class="btn btn-primary btn-lg" ng-if="isModify" ng-click="modify()">修改</button>
+            <button class="btn btn-success btn-lg" ng-if="!isModify" ng-click="addNew()" ng-disabled="disabled">添加</button>
+            <button class="btn btn-primary btn-lg" ng-if="isModify" ng-click="modify()" ng-disabled="disabled">修改</button>
         </div>
     </div>
 </div>

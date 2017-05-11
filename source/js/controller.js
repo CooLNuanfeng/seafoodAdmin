@@ -231,6 +231,7 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
 
 
     $scope.addNew = function(){
+        $scope.disabled = true;
         var json = {
             "id" : $scope.shopId,
             "classify" : $scope.shopClassify,
@@ -251,14 +252,16 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
                 console.log('push error');
                 $scope.showToast = false;
                 $scope.toastInfo = false;
+                $scope.disabled = false;
                 return;
             }
             $scope.showToast = true;
             $scope.toastInfo = true;
             $scope.timeToast = 3;
+            $scope.disabled = false;
             var timer =  $interval(function(){
                 $scope.timeToast--;
-                if($scope.timeToast<=1){
+                if($scope.timeToast<1){
                     $interval.cancel(timer);
                     $state.go('index');
                 }
@@ -268,6 +271,7 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
 
 
     $scope.modify = function(){
+        $scope.disabled = true;
         var json = {
             "id" : $scope.shopId,
             "classify" : $scope.shopClassify,
@@ -290,14 +294,16 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
                 console.log('update error');
                 $scope.showToast = false;
                 $scope.toastInfo = false;
+                $scope.disabled = false;
                 return;
             }
             $scope.showToast = true;
             $scope.toastInfo = true;
             $scope.timeToast = 3;
+            $scope.disabled = false;
             var timer =  $interval(function(){
                 $scope.timeToast--;
-                if($scope.timeToast<=1){
+                if($scope.timeToast<1){
                     $interval.cancel(timer);
                     $state.go('index');
                 }

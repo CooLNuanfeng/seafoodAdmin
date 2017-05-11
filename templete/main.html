@@ -18,7 +18,7 @@
                 <th>标签tag</th>
                 <th>商品单价(kg)</th>
                 <th>商品描述说明</th>
-                <th>商品图片地址</th>
+                <th>商品首图地址</th>
                 <th>商品喜欢人数</th>
                 <th>商品购买人数</th>
                 <th>操作</th>
@@ -36,8 +36,8 @@
                 <td>{{item.likeCount}}</td>
                 <td>{{item.shopCount}}</td>
                 <td>
-                    <button class="btn btn-primary" ng-click="open(item.keyid,index)">修改</button>
-                    <button class="btn btn-info" ui-sref="detail({ keyid: item.keyid, classify: item.classify })">编辑内容</button>
+                    <p><button class="btn btn-primary" ng-click="open(item.keyid,index)">修改</button></p>
+                    <p><button class="btn btn-info" ui-sref="detail({ keyid: item.keyid, classify: item.classify })">编辑内容</button></p>
                     <button class="btn btn-danger" ng-click="delItem(item.keyid,item.classify)">删除</button>
                 </td>
             </tr>
