@@ -1,7 +1,7 @@
 var mycontroller = angular.module('controllerModule',[]);
 
 //首页 controller
-mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','config','arrDataPagition',function($scope,$uibModal,$wilddogObject,config,arrDataPagition){
+mycontroller.controller('indexControl',['$scope','$rootScope','$uibModal','$wilddogObject','config','arrDataPagition',function($scope,$rootScope,$uibModal,$wilddogObject,config,arrDataPagition){
     //console.log(config,'config');
     wilddog.initializeApp(config.wilddog);
     var myshopData = wilddog.sync().ref('indexData');
@@ -26,41 +26,47 @@ mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','c
     // syncObject.$bindTo($scope,"indexData");
 
 
-
-    var onceFlag = true;
+    // var onceFlag = true;
+    var tableAllData = [];
     myshopData.on('value',function(snapshot){
-        var tableData = [];
+        tableAllData.length = 0;
         angular.forEach(snapshot.val(),function(item,key){
             angular.forEach(item,function(obj,k){
-                obj['key_id'] = k;
-                tableData.push(obj);
+                obj['keyid'] = k;
+                tableAllData.push(obj);
             });
         });
-        $scope.currentPage = 1;
-        $scope.pageSize = 2;
-        $scope.maxSize = Math.ceil(tableData.length/$scope.pageSize);
-        $scope.totalItems = tableData.length;
+        //$scope.currentPage = 1;
+        $scope.pageSize = 10;
+        $scope.maxSize = Math.ceil(tableAllData.length/$scope.pageSize);
+        $scope.totalItems = tableAllData.length;
 
-        $scope.tableData = arrDataPagition.init(tableData,$scope.currentPage,$scope.pageSize);
+        $scope.tableData = arrDataPagition.init(tableAllData,$scope.currentPage,$scope.pageSize);
 
-        if(onceFlag){
+        if($rootScope.onceFlag){
             $scope.$digest();
-            onceFlag = false;
+            $rootScope.onceFlag = false;
         }
 
         $scope.pageChanged = function(page) {
             //console.log('Page changed to: ' + page);
-            $scope.tableData =arrDataPagition.init(tableData,page,$scope.pageSize)
+            $scope.currentPage = page;
+            $scope.tableData = arrDataPagition.init(tableAllData,page,$scope.pageSize);
         };
-
     });
 
 
+    // del
+    $scope.delItem = function(key,classify){
+        //console.log('del',key,classify);
+        myshopData.child(classify+'/'+key).remove();
+    };
 
 
-    //modal
-    $scope.open = function(size,key) {
-        console.log($scope.tableData,'dss',key);
+
+    //modal  modiy or add
+    $scope.open = function(key,index) {
+        // console.log($scope.tableData[index],'dss',key);
         var modalInstance = null;
         modalInstance = $uibModal.open({
             animation: true,
@@ -68,10 +74,10 @@ mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','c
             ariaDescribedBy: 'modal-body',
             templateUrl: 'myModalContent.html',
             controller: 'ModalInstanceCtrl',
-            size: size,
+            size: 'lg',
             resolve: {
                 data: function () {
-                    return key ? $scope.tableData[key] : null;
+                    return key ? $scope.tableData[index] : null;
                 },
                 title : function(){
                     return key ? '修改商品信息' : '添加商品信息';
@@ -90,15 +96,31 @@ mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','c
                 "imgsrc" : obj.shopImgsrc,
                 "price" : obj.shopPrice,
                 "shopCount" : obj.shopBuycount,
-                "likeCount" : obj.shopLikecount
+                "likeCount" : obj.shopLikecount,
+                "bannerImgsrc" : obj.shopBannerImg,
+                "content" : obj.shopContent,
+                "contentImgsrc" : obj.shopContentImgsrc
             };
 
-            if(key){
+            if(key){ //修改
                 var data = {};
                 data[key] = json;
-                myshopData.child(classify).update(data);
+                //console.log(json,'update',classify);
+                myshopData.child(classify).update(data,function(err){
+                    if(err){
+                        console.log('update error');
+                        return;
+                    }
+                    $scope.tableData = arrDataPagition.init(tableAllData,$scope.currentPage,$scope.pageSize);
+                });
             }else{
-                myshopData.child(classify).push(json);
+                //console.log(json,'push',classify);
+                myshopData.child(classify).push(json,function(err){
+                    if(err){
+                        console.log('push error');
+                        return;
+                    }
+                });
             }
 
             // //way one code
@@ -107,13 +129,15 @@ mycontroller.controller('indexControl',['$scope','$uibModal','$wilddogObject','c
             // },function(error) {
             //     console.log("Error:", error);
             // });
+
         }, function () {
             console.info('Modal dismissed at: ' + new Date());
         });
     };
-}]);
 
-mycontroller.controller('ModalInstanceCtrl',['$scope','$uibModalInstance','data','title',function($scope,$uibModalInstance,data,title){
+}]);
+//首页 modal
+mycontroller.controller('ModalInstanceCtrl',['$scope','$uibModalInstance','selectOptions','data','title',function($scope,$uibModalInstance,selectOptions,data,title){
     $scope.modalTitle = title;
 
     $scope.shopId = data ? data.id : new Date().getTime();
@@ -125,6 +149,12 @@ mycontroller.controller('ModalInstanceCtrl',['$scope','$uibModalInstance','data'
     $scope.shopImgsrc = data ? data.imgsrc : '';
     $scope.shopLikecount = data ? data.likeCount : '';
     $scope.shopBuycount = data ? data.shopCount : '';
+    $scope.shopContent = data ? data.content : '';
+    $scope.shopBannerImg = data ? data.bannerImgsrc : '';
+    $scope.shopContentImgsrc = data ? data.contentImgsrc : '';
+    //selectOptions
+    $scope.selectOptions = selectOptions.init();
+
 
 
     $scope.ok = function () {
@@ -134,4 +164,145 @@ mycontroller.controller('ModalInstanceCtrl',['$scope','$uibModalInstance','data'
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-}])
+}]);
+
+
+
+
+// 详情页编辑
+mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$state','$stateParams','config','selectOptions',function($scope,$rootScope,$interval,$state,$stateParams,config,selectOptions){
+    console.log($stateParams.keyid);
+    wilddog.initializeApp(config.wilddog);
+    var myshopData = wilddog.sync().ref('indexData'),
+        keyid = $stateParams.keyid,
+        classify = $stateParams.classify;
+
+    $scope.isModify = keyid ? true : false;
+
+    myshopData.on('value',function(snapshot){
+        var data = keyid ? snapshot.val()[classify][keyid] : null;
+        $scope.shopId = keyid ? data.id : new Date().getTime();
+        $scope.shopClassify = keyid ? classify : 'fish';
+        $scope.shopTitle = keyid ? data.title : '';
+        $scope.shopTag = keyid ? data.tag : '';
+        $scope.shopPrice = keyid ? data.price : '';
+        $scope.shopDescription = keyid ? data.description : '';
+        $scope.shopImgsrc = keyid ? data.imgsrc : '';
+        $scope.shopLikecount = keyid ? data.likeCount : '';
+        $scope.shopBuycount = keyid ? data.shopCount : '';
+        $scope.shopBannerImg = keyid && data.bannerImgsrc ? data.bannerImgsrc : [];
+        $scope.shopContent = keyid ? data.content : '';
+        $scope.shopContentImgsrc = keyid && data.contentImgsrc ? data.contentImgsrc :[];
+        // if(keyid && data.contentImgsrc){
+        //     angular.forEach(data.contentImgsrc,function(item,key){
+        //         console.log(item);
+        //         $scope.shopContentImgsrc.push(item);
+        //     });
+        // }
+
+        if($rootScope.onceFlag){
+            $scope.$digest();
+            $rootScope.onceFlag = false;
+        }
+    });
+    $scope.selectOptions = selectOptions.init();
+
+
+    //添加新图
+    $scope.addImg = function(type){
+        if(type == 'content' && $scope.addImgsrc){
+            $scope.shopContentImgsrc.push($scope.addImgsrc);
+            $scope.addImgsrc = '';
+        }
+        if(type == 'banner' && $scope.addBannerImgsrc){
+            $scope.shopBannerImg.push($scope.addBannerImgsrc);
+            $scope.addBannerImgsrc = '';
+        }
+    };
+    //删除新图
+    $scope.del = function(type,index){
+        if(type == 'content'){
+            $scope.shopContentImgsrc.splice(index,1);
+        }
+        if(type == 'banner'){
+            $scope.shopBannerImg.splice(index,1);
+        }
+    }
+
+
+    $scope.addNew = function(){
+        var json = {
+            "id" : $scope.shopId,
+            "classify" : $scope.shopClassify,
+            "tag" : $scope.shopTag,
+            "title" : $scope.shopTitle,
+            "description" : $scope.shopDescription,
+            "imgsrc" : $scope.shopImgsrc,
+            "price" : $scope.shopPrice,
+            "shopCount" : $scope.shopBuycount,
+            "likeCount" : $scope.shopLikecount,
+            "bannerImgsrc" : $scope.shopBannerImg,
+            "content" : $scope.shopContent,
+            "contentImgsrc" : $scope.shopContentImgsrc
+        };
+
+        myshopData.child($scope.shopClassify).push(json,function(err){
+            if(err){
+                console.log('push error');
+                $scope.showToast = false;
+                $scope.toastInfo = false;
+                return;
+            }
+            $scope.showToast = true;
+            $scope.toastInfo = true;
+            $scope.timeToast = 3;
+            var timer =  $interval(function(){
+                $scope.timeToast--;
+                if($scope.timeToast<=1){
+                    $interval.cancel(timer);
+                    $state.go('index');
+                }
+            },1000);
+        });
+    };
+
+
+    $scope.modify = function(){
+        var json = {
+            "id" : $scope.shopId,
+            "classify" : $scope.shopClassify,
+            "tag" : $scope.shopTag,
+            "title" : $scope.shopTitle,
+            "description" : $scope.shopDescription,
+            "imgsrc" : $scope.shopImgsrc,
+            "price" : $scope.shopPrice,
+            "shopCount" : $scope.shopBuycount,
+            "likeCount" : $scope.shopLikecount,
+            "bannerImgsrc" : $scope.shopBannerImg,
+            "content" : $scope.shopContent,
+            "contentImgsrc" : $scope.shopContentImgsrc
+        };
+        var data = {};
+        data[keyid] = json;
+        //console.log(json,'update',classify);
+        myshopData.child(classify).update(data,function(err){
+            if(err){
+                console.log('update error');
+                $scope.showToast = false;
+                $scope.toastInfo = false;
+                return;
+            }
+            $scope.showToast = true;
+            $scope.toastInfo = true;
+            $scope.timeToast = 3;
+            var timer =  $interval(function(){
+                $scope.timeToast--;
+                if($scope.timeToast<=1){
+                    $interval.cancel(timer);
+                    $state.go('index');
+                }
+            },1000);
+        });
+    }
+
+}]);

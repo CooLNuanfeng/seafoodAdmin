@@ -7,11 +7,15 @@ myApp.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$url
         templateUrl : './templete/main.html'
     })
     .state('detail',{
-        url : '/detail',
+        url : '/detail/:classify&:keyid',
         templateUrl : './templete/detail.html'
     })
     .state('order',{
         url : '/order',
         templateUrl : './templete/order.html'
-    })
+    });
+}]);
+
+myApp.run(['$rootScope',function($rootScope){
+    $rootScope.onceFlag = true;
 }]);

@@ -26,6 +26,20 @@ commonModule.directive('navHeader',function(){
     }
 });
 
+
+// commonModule.factory('wilddogHttp',['config',function(config){
+//     wilddog.initializeApp(config.wilddog);
+//     return {
+//         get : function(database){
+//             var myshopData = wilddog.sync().ref(database);
+//             myshopData.on('value',function(snapshot){
+//                 return snapshot.val();
+//             });
+//         }
+//     }
+// }]);
+
+
 commonModule.service('arrDataPagition',function(){
 
     this.init = function(arr,cur,size){
@@ -37,6 +51,20 @@ commonModule.service('arrDataPagition',function(){
     }
 });
 
+
+commonModule.service('selectOptions',['config',function(config){
+    this.init = function(){
+        var arr = [];
+        angular.forEach(config.classify,function(item,key){
+            var json = {
+                'key' : key,
+                'value' : item
+            };
+            arr.push(json);
+        });
+        return arr;
+    }
+}]);
 
 commonModule.filter('classify',['config',function(config){
     return function(str){

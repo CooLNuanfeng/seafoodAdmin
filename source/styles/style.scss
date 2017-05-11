@@ -13,6 +13,17 @@
     }
 }
 
+.nf-mb10{
+    margin-bottom: 10px;
+}
 .nf-pb20{
     padding-bottom: 20px;
+}
+
+.nf-group{
+    p.form-inline{
+        .form-control{
+            width: 90%;
+        }
+    }
 }
