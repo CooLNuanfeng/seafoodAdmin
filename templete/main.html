@@ -19,8 +19,8 @@
                 <th>商品单价(kg)</th>
                 <th>商品描述说明</th>
                 <th>商品首图地址</th>
-                <th>商品喜欢人数</th>
-                <th>商品购买人数</th>
+                <th>是否全国发货</th>
+                <th>购买人数</th>
                 <th>操作</th>
             </tr>
         </thead>
@@ -31,9 +31,9 @@
                 <td>{{item.title}}</td>
                 <td>{{item.tag}}</td>
                 <td>{{item.price}}</td>
-                <td>{{item.description}}</td>
-                <td>{{item.imgsrc}}</td>
-                <td>{{item.likeCount}}</td>
+                <td><p class="nf-td-text">{{item.description}}</p></td>
+                <td><p class="nf-td-text">{{item.imgsrc}}</p></td>
+                <td>{{item.limitArea=='1'?'是(全国)':'否(省内)'}}</td>
                 <td>{{item.shopCount}}</td>
                 <td>
                     <p><button class="btn btn-primary" ng-click="open(item.keyid,index)">修改</button></p>
@@ -91,9 +91,10 @@
                 </div>
             </div>
             <div class="row form-group">
-                <label for="shopLikecount" class="col-sm-3 control-label">喜欢人数</label>
+                <label for="shopLimitArea" class="col-sm-3 control-label">是否全国发货</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="shopLikecount" placeholder="请输入喜欢的人数" ng-model="shopLikecount" value="{{shopLikecount}}">
+                    <label class="control-label"><input type="radio" name="area" value="0" ng-model="shopLimitArea">否(仅省内) </label>
+                    <label class="control-label"><input type="radio" name="area" value="1" ng-model="shopLimitArea">是(全国) </label>
                 </div>
             </div>
             <div class="row form-group">

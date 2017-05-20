@@ -96,7 +96,7 @@ mycontroller.controller('indexControl',['$scope','$rootScope','$uibModal','$wild
                 "imgsrc" : obj.shopImgsrc,
                 "price" : obj.shopPrice,
                 "shopCount" : obj.shopBuycount,
-                "likeCount" : obj.shopLikecount,
+                "limitArea" : obj.shopLimitArea,
                 "bannerImgsrc" : obj.shopBannerImg,
                 "content" : obj.shopContent,
                 "contentImgsrc" : obj.shopContentImgsrc
@@ -147,7 +147,7 @@ mycontroller.controller('ModalInstanceCtrl',['$scope','$uibModalInstance','selec
     $scope.shopPrice = data ? data.price : '';
     $scope.shopDescription = data ? data.description : '';
     $scope.shopImgsrc = data ? data.imgsrc : '';
-    $scope.shopLikecount = data ? data.likeCount : '';
+    $scope.shopLimitArea = data ? data.limitArea : '';
     $scope.shopBuycount = data ? data.shopCount : '';
     $scope.shopContent = data ? data.content : '';
     $scope.shopBannerImg = data ? data.bannerImgsrc : '';
@@ -188,7 +188,7 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
         $scope.shopPrice = keyid ? data.price : '';
         $scope.shopDescription = keyid ? data.description : '';
         $scope.shopImgsrc = keyid ? data.imgsrc : '';
-        $scope.shopLikecount = keyid ? data.likeCount : '';
+        $scope.shopLimitArea = keyid ? data.limitArea : '';
         $scope.shopBuycount = keyid ? data.shopCount : '';
         $scope.shopBannerImg = keyid && data.bannerImgsrc ? data.bannerImgsrc : [];
         $scope.shopContent = keyid ? data.content : '';
@@ -241,7 +241,7 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
             "imgsrc" : $scope.shopImgsrc,
             "price" : $scope.shopPrice,
             "shopCount" : $scope.shopBuycount,
-            "likeCount" : $scope.shopLikecount,
+            "limitArea" : $scope.shopLimitArea,
             "bannerImgsrc" : $scope.shopBannerImg,
             "content" : $scope.shopContent,
             "contentImgsrc" : $scope.shopContentImgsrc
@@ -281,7 +281,7 @@ mycontroller.controller('detailControl',['$scope','$rootScope','$interval','$sta
             "imgsrc" : $scope.shopImgsrc,
             "price" : $scope.shopPrice,
             "shopCount" : $scope.shopBuycount,
-            "likeCount" : $scope.shopLikecount,
+            "limitArea" : $scope.shopLimitArea,
             "bannerImgsrc" : $scope.shopBannerImg,
             "content" : $scope.shopContent,
             "contentImgsrc" : $scope.shopContentImgsrc

@@ -44,9 +44,10 @@
         </div>
     </div>
     <div class="row form-group">
-        <label for="shopLikecount" class="col-md-3 control-label">喜欢人数</label>
+        <label for="shopLimitArea" class="col-md-3 control-label">是否全国发货</label>
         <div class="col-md-9">
-          <input type="text" class="form-control" id="shopLikecount" placeholder="请输入喜欢的人数" ng-model="shopLikecount" value="{{shopLikecount}}">
+            <label class="control-label"><input type="radio" name="area" value="0" ng-model="shopLimitArea">否(仅省内) </label>
+            <label class="control-label"><input type="radio" name="area" value="1" ng-model="shopLimitArea">是(全国) </label>
         </div>
     </div>
     <div class="row form-group">
